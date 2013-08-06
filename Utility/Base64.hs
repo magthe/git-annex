@@ -8,15 +8,14 @@
 module Utility.Base64 (toB64, fromB64Maybe, fromB64) where
 
 import Codec.Binary.Base64
-import Data.Bits.Utils
-import Control.Applicative
+import Data.ByteString.Char8
 import Data.Maybe
 
 toB64 :: String -> String		
-toB64 = encode . s2w8
+toB64 = unpack . encode . pack
 
 fromB64Maybe :: String -> Maybe String
-fromB64Maybe s = w82s <$> decode s
+fromB64Maybe s = either (const Nothing) (Just . unpack) (decode $ pack s)
 
 fromB64 :: String -> String
 fromB64 = fromMaybe bad . fromB64Maybe
